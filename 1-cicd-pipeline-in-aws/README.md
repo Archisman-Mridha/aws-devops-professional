@@ -133,6 +133,20 @@ We can share AWS AMIs across AWS accounts using AWS RAM.
 
 ![Latest AMI version](./media/latest-ami-version.png)
 
+## CodeArtifact
+
+An application has dependencies. And the process of storing and retrieving these dependencies is called artifact management. **CodeArtifact is a secure, scalable and cost-efficient artifact management system**. It supports common dependency management tools like Maven, Gradle, NPM, PIP etc.
+
+CodeArtifact consists of Domains (VPC scoped). Each domain is a group of artifact repositories. Each repository contains cached artifacts (can be from public artifact repositories like NPM or custom artifacts can also be uploaded).
+
+> Generally the developer fetches a package directly from public registry like NPM. But **CodeArtifact can act as a proxy to public artifact repositories**. But in this case - when your development environment requests a package from a public repository, CodeArtifact intercepts the request, checks if it already has a local copy of the package, and if not, retrieves it from the public repository and caches it for future use.
+
+Both developers and CodeBuild can retrieve dependencies directly from CodeArtifact. CodeArtifact can publish event to AWS EventBridge when an artifact is created, upgraded or deleted.
+
+Access to an artifact repository can be given to another AWS account using resource policy. **Access can be given at repository level and not  at artifact level**.
+
+- [ ] Complete the section on AWS CodeArtifact.
+
 ## CodeGuru
 
 CodeGuru is a Machine Learning service provided by AWS for doing automated code reviews (using CodeGuru Reviewer) and application performance profiling (using CodeGuru Profiler).
