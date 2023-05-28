@@ -60,3 +60,35 @@ AWS CodePipeline can be integrated with -
 ![Multi-region Lambda Deployments](./media/multi-region-lambda-deployments.png)
 
 **Multi-region deployments using CodePipeline** - Let’s take an example - Deploying an AWS Lambda function into multiple AWS regions using AWS CloudFormation. First of all, **in each of those regions, the S3 artifact buckets must be defined**. If you are using AWS Console to create the pipeline, then those S3 buckets will be created automatically, otherwise we need to create them manually. One good thing is - copying artifacts across S3 buckets in different regions is handled by CodePipeline automatically.
+
+## AWS CodeBuild
+
+**AWS CodeBuild takes sourcecode from a source repository (AWS CodeCommit, Github etc.) and generates build-artifacts from it.** The source repository must contain a *`buildspec.yml`* file (at the root of the repository. If it is in some other path, then we need to tell CodeCommit about it) which which contains the configuration for the build process. **The output logs generated during the process can be stored in AWS S3 or CloudWatch Logs. We can also use CloudWatch Metrics to monitor the build statistics. CloudWatch Alarms can be used in case of failed builds. AWS CodeBuild can also be integrated with EventBridge to send notifications regarding build status.**
+
+> *CodeBuild creates a container in the backend. Sourcecode is loaded inside the CodeBuild container and the build process as mentioned in the `buildspec.yml` file, is run inside the container. You can use your custom container image or one of the template container images provided by AWS depending on your specific needs.*
+
+By default the CodeBuild container is launched outside any VPC. But you can also make them launch inside your VPC (if during the build/testing process, you need to access resources inside the VPC).
+
+**During the build process, we can cache files in S3 buckets**. After the build process is successfully finished, the build artifacts will be stored in S3 buckets.
+
+**For debugging purposes, we can run CodeBuild in our local machine by using CodeBuild agent**.
+
+![AWS CodeBuild Container](./media/aws-codebuild-container.png)
+
+Environment Variables required during the build process -
+
+- **Default Environment Variables** - These are defined and provided by AWS. These environment variables mention the AWS region where the CodeBuild container will be created, build ARN, build ID and other metadata related to the process.
+- **Static Custom Environment Variables** - These are defined at build time and can be overridden using the start-build API call.
+- **Dynamic Custom Environment Variables** - These are secrets pulled from AWS SSM Parameter Store or AWS Secrets Manager during build time.
+
+AWS CodeBuild interacts with other AWS resources in a secure manner by using encryption. Data encryption can be enabled for logs, cache and build artifacts.
+
+**To enable data encryption for build artifacts, AWS CodeBuild needs access to AWS KMS.**
+
+**CodeBuild Build Badges** - In the source repository (supported sources are AWS CodeCommit, Github and BitBucket), after the CodeBuild build has failed or succeeded, a badge is generated. This badge is an image showing the status of the CodeBuild build. **CodeBuild badges are scoped to branch level** (**showing the status of a branch**) and not commit level.
+
+CodeBuild builds can be triggered by a **webhook**, **AWS Lambda function** or **AWS EventBridge**.
+
+![Untitled](./media/commit-comments-using-lambda.png)
+
+For a build process, CodeBuild can also generate a visual test report (shows percentage of testcases passed, which testcases have failed etc.) from a test report file. The test report file needs to be in a specific format which CodeBuild can understand (like JUnit XML, Cucumber JSON etc.). Configurations related to generating visual test reports can be written in the `*buildspec.yaml*` file.
