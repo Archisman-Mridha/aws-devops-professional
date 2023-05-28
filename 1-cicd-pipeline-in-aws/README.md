@@ -92,3 +92,25 @@ CodeBuild builds can be triggered by a **webhook**, **AWS Lambda function** or *
 ![Untitled](./media/commit-comments-using-lambda.png)
 
 For a build process, CodeBuild can also generate a visual test report (shows percentage of testcases passed, which testcases have failed etc.) from a test report file. The test report file needs to be in a specific format which CodeBuild can understand (like JUnit XML, Cucumber JSON etc.). Configurations related to generating visual test reports can be written in the *`buildspec.yaml`* file.
+
+## AWS CodeDeploy
+
+> **AWS CodeDeploy is used to automate application deployments**. Application deployments can be done to **AWS EC2 instances, bare metal servers, AWS Lambda or AWS ECS**. **Application deployments are versioned** and AWS CodeDeploy provides us an option to **rollback to previous versions** (in case of failed deployments or unexpected behaviors of the application). We can also follow different deployment strategies - **blue-green** and **in-place** (All at once, Half at a time, One by one or we can create a custom in-place strategy). In order to use AWS CodeDeploy, the sourcecode must have an `*appspec.yml*` file at the repository root which will contain CodeDeploy configurations.
+> 
+- **Deploying to EC2 instances or bare-metal servers** - **CodeDeploy Agent must run on each of the target instances** since it is responsible for performing application upgrades. It needs to be installed and updated over time - which we can do manually | or we can AWS Systems Manager for this to happen automatically. **The instance should also have permission to access the S3 bucket containing the application build**.
+
+    - [ ] Read about this point in more detail.
+
+- **Deploying to AWS ECS** - AWS CodeDeploy can help us automate deployment of an ECS task definition to an ECS service. **The ECS service is required to have a loadbalancer attached**. Also, **it is our responsibility to have the container images ready**. **Only blue-green deployment strategy is available** in this case. But the **traffic shift can be done in multiple ways - linear, canary or all at once**.
+
+    ![Deployment to AWS ECS](./media/deployment-to-aws-ecs.png)
+
+    💡 *In the appspec.yml file, we **can create a 2nd test listener in the ALB to the replacement version of the ECS task**. This test listener can be used to test traffic flow.*
+    
+    During the deployment process, we are provided with some hooks - *BeforeInstall*, *AfterInstall*, *AfterAllowTestTraffic*, *BeforeAllowTraffic*, *AfterAllowTraffic* (**we can setup Lambda functions as trigger for these hooks**) and *Install* (the ECS service creating ECS task from the ECS task definition we provided), *AllowTestTraffic*, *AllowTraffic*.
+
+- **Deploying to AWS Lambda** - AWS CodeDeploy is used to switch traffic from old to new alias of a lambda function. Like AWS ECS, only blue-green strategy is available in this case.
+
+    ![AWS CodeDeploy for deploying AWS Lambda](./media/aws-codedeploy-for-deploying-aws-lambda.png)
+
+    During the deployment process, we can utilize 3 hooks provided by AWS CodeDeploy - *BeforeAllowTraffic*, *AfterAllowTraffic* (**we can trigger Lambda functions in case of these 2**) and *AllowTraffic*.
