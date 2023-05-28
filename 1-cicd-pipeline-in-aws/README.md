@@ -91,4 +91,4 @@ CodeBuild builds can be triggered by a **webhook**, **AWS Lambda function** or *
 
 ![Untitled](./media/commit-comments-using-lambda.png)
 
-For a build process, CodeBuild can also generate a visual test report (shows percentage of testcases passed, which testcases have failed etc.) from a test report file. The test report file needs to be in a specific format which CodeBuild can understand (like JUnit XML, Cucumber JSON etc.). Configurations related to generating visual test reports can be written in the `*buildspec.yaml*` file.
+For a build process, CodeBuild can also generate a visual test report (shows percentage of testcases passed, which testcases have failed etc.) from a test report file. The test report file needs to be in a specific format which CodeBuild can understand (like JUnit XML, Cucumber JSON etc.). Configurations related to generating visual test reports can be written in the *`buildspec.yaml`* file.
