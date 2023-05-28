@@ -57,6 +57,6 @@ AWS CodePipeline can be integrated with -
 - **AWS CloudTrail** - If you want to **audit API calls made during the CI/CD process**.
 - **AWS CloudFormation Actions** and **Stacksets** - To manage AWS infrastructure.
 
-[Multi-region Lambda Deployments](./media/multi-region-lambda-deployments.png)
+![Multi-region Lambda Deployments](./media/multi-region-lambda-deployments.png)
 
 **Multi-region deployments using CodePipeline** - Let’s take an example - Deploying an AWS Lambda function into multiple AWS regions using AWS CloudFormation. First of all, **in each of those regions, the S3 artifact buckets must be defined**. If you are using AWS Console to create the pipeline, then those S3 buckets will be created automatically, otherwise we need to create them manually. One good thing is - copying artifacts across S3 buckets in different regions is handled by CodePipeline automatically.
