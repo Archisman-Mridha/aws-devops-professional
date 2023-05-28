@@ -41,7 +41,7 @@ Taking **backups** of a CodeCommit repository -
 
 From one phase of the pipeline, we can **sequentially** or **parallely** start another phase.
 
-**A single stage has multiple action groups** like ****Manual Approval, AWS S3, AWS CodeBuild etc). Manual approval can be defined at each stage. **Whenever a manual approval is required, we can trigger an SNS topic which will send an email to the reviewer**.
+**A single stage has multiple action groups** like (Manual Approval, AWS S3, AWS CodeBuild etc). Manual approval can be defined at each stage. **Whenever a manual approval is required, we can trigger an SNS topic which will send an email to the reviewer**.
 
 > Each phase can generate artifacts. Those artifacts are stored in an AWS S3 bucket and can be accessed by later phases.
 
