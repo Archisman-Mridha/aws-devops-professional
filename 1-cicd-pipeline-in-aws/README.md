@@ -2,13 +2,15 @@
 
 > **Continuous Integration (CI)** - *The developer will push their code to a central repository. A build/test server will then pick up the code and startup builds and tests. The developer then gets feedback regarding the succeeded/failed builds and tests.* This complete process is called Continuous Integration.
 
-> **Continuous Delivery (CD)** - *If all the builds and tests have succeeded in the CI process, the builds can then be deployed (to application servers) by a deployment server.* This complete process is called Continuous Delivery.
+> **Continuous Deployment (CD)** - *If all the builds and tests have succeeded in the CI process, the builds can then be deployed (to application servers) by a deployment server.* This process of automated deployments is called Continuous Deployment.
+
+If in the process of automated deployments, **we have some manual steps like getting manual approvals**, then we term the process as Continuous Delivery and not Continuous Deployment.
 
 ![AWS CI/CD Pipeline](./media/aws-cicd-pipeline.png)
 
 ## AWS CodeCommit
 
-AWS CodeCommit is a **Version Control System** (VCS like Github, Gitlab, BitBucket etc.) as a service offered by AWS. Features of AWS CodeCommit -
+AWS CodeCommit is a **Version Control System** (VCS like Github, Gitlab, BitBucket etc.) as a service offered by AWS. It **supports only private repositories**. Features of AWS CodeCommit -
 
 - Repositories can be scaled seamlessly as there is **no size limit**.
 - Sourcecode in a repository **can be automatically encrypted using AWS KMS**.
@@ -114,3 +116,31 @@ For a build process, CodeBuild can also generate a visual test report (shows per
     ![AWS CodeDeploy for deploying AWS Lambda](./media/aws-codedeploy-for-deploying-aws-lambda.png)
 
     During the deployment process, we can utilize 3 hooks provided by AWS CodeDeploy - *BeforeAllowTraffic*, *AfterAllowTraffic* (**we can trigger Lambda functions in case of these 2**) and *AllowTraffic*.
+
+## EC2 Image Builder
+
+EC2 Image Builder is a fully managed AWS service that helps you to **automate the creation, management, and deployment of customized, secure, and up-to-date server images**.
+
+> In order to build a custom AMI, the EC2 Image Builder service first creates a barebone EC2 instance (called builder). EC2 Image Builder then applies the build component on the builder. After all the build components are applied successfully, the custom AMI is extracted from the builder instance. Optionally, this custom AMI can then be tested by installing it in a test EC2 instance. The AMI is then published to multiple regions and multiple accounts.
+
+💡 EC2 Image Builder is a no-cost AWS service. We only pay for the underlying AWS resources we use during the process.
+
+![CI/CD pipeline for automated AMI building](./media/pipeline-for-automated-ami-building.png)
+
+💡 **AWS Resource Access Manager** (AWS RAM) helps you securely share your resources across AWS accounts, within your organization or organizational units (OUs), and with AWS Identity and Access Management (IAM) roles and users for supported resource types.If you have multiple AWS accounts, you can create a resource once and use AWS RAM to make that resource usable by those other accounts. If your account is managed by AWS Organizations, you can share resources with all the other accounts in the organization or only those accounts contained by one or more specified organizational units (OUs). You can also share with specific AWS accounts by account ID, regardless of whether the account is part of an organization.
+
+We can share AWS AMIs across AWS accounts using AWS RAM.
+
+![Latest AMI version](./media/latest-ami-version.png)
+
+## CodeGuru
+
+CodeGuru is a Machine Learning service provided by AWS for doing automated code reviews (using CodeGuru Reviewer) and application performance profiling (using CodeGuru Profiler).
+
+- **CodeGuru Reviewer** -  CodeGuru reviewer analyses the sourcecode when we push a new commit to the source repository. It searches for security vulnerabilities, memory leaks etc.
+    
+    **CodeGuru Reviewer Secrets Detector** uses Machine Learning to identify hardcoded secrets in the application source code and suggests us to protect those secrets by shifting them to AWS Secrets Manager.
+    
+- **CodeGuru Profiler** - It helps us understand the runtime behavior of our application. It tries to improve the application performance and also provides us with the heap summary (identifies which objects are taking lot of space in the memory). Applications running in AWS or on-premises are supported.
+    
+    CodeGuru Profiler can be integrated with an AWS Lambda function. In the lambda function sourcecode or in a lambda layer, we can use a function decorator to enable profiling. We can also enable profiling for the Lambda function from the AWS Console (not recommended).
